@@ -1,0 +1,79 @@
+# Version control
+.git
+.gitignore
+.github/
+
+# Build artifacts
+.gradle/
+build/
+out/
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Kotlin specific
+*.kotlin_module
+*.kotlin_metadata
+*.kotlin_builtins
+
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+docs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Node (if using for frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Docker specific
+.dockerignore
+Dockerfile*
+docker-compose*
+
+# Testing
+test/
+tests/
+*Test.kt
+*Tests.kt
+*-test.kt
+*-tests.kt
+
+# Configuration that should be passed at runtime
+.env
+*.env
+.env.*
+config.local.*
+
+# Misc
+*.bak
+*.old

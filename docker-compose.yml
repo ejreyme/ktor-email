@@ -1,0 +1,28 @@
+services:
+  app:
+    build: .
+#    image: ktor-email-app:latest
+    ports:
+      - "9004:9004"
+    environment:
+#      - PORT=${PORT}
+      - JG_EMAIL_PASSWORD=${JG_EMAIL_PASSWORD}
+      - JG_EMAIL_FROM=${JG_EMAIL_FROM}
+      - JG_EMAIL_HOST=${JG_EMAIL_HOST}
+      - JG_EMAIL_PORT=${JG_EMAIL_PORT}
+      - EMAIL_QUEUE_TYPE=${EMAIL_QUEUE_TYPE}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  redis_data:

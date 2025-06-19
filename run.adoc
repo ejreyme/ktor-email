@@ -1,0 +1,101 @@
+= BUILD AND RUN
+
+ https://ktor.io
+
+== Build and Run Local
+
+[source,bash]
+----
+./gradlew -t build
+
+./gradlew -t build -x test -i
+
+./gradlew :server:run
+
+docker run --name redis -p 6379:6379 -d redis
+----
+
+== build and run with docker
+
+=== build docker with image tag: "ktor-email-image"
+[source,bash]
+----
+docker build -t ktor-email-image .
+----
+
+=== run docker container with name: "ktor-email" and image tag: "ktor-email-image"
+[source,bash]
+----
+docker run -p 9004:9004 --name ktor-email ktor-email-image
+----
+
+=== stop and remove docker with container name: "ktor-email"
+
+[source,bash]
+----
+docker stop ktor-email && docker remove ktor-email
+----
+
+=== stop docker with container name: "ktor-email"
+[source,bash]
+----
+docker stop ktor-email
+----
+
+=== remove docker with container name: "ktor-email"
+[source,bash]
+----
+docker remove ktor-email
+----
+
+== build and run with docker compose
+
+=== 0. clean
+[source,bash]
+----
+./gradlew clean
+----
+
+=== 1. build fatjar
+[source,bash]
+----
+./gradlew :server:buildFatJar
+----
+
+=== 2. docker compose build
+[source,bash]
+----
+docker-compose up -d --build
+----
+
+=== 3. docker compose full build
+[source,bash]
+----
+./gradlew clean && ./gradlew :server:buildFatJar && docker-compose up -d --build
+----
+
+=== 4. docker compose down
+[source,bash]
+----
+docker-compose down
+----
+
+== gradle
+
+=== clean
+[source,bash]
+----
+./gradlew clean
+----
+
+=== build and deploy to local registry
+[source,bash]
+----
+./gradlew :server:cleanBuildPublish
+----
+
+=== run docker from local registry
+[source,bash]
+----
+./gradlew :server:runDocker
+----

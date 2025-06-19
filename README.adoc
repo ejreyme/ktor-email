@@ -1,0 +1,148 @@
+= Ktor Email Service
+A robust, scalable email queueing and delivery service built with Ktor. This service provides reliable email delivery with configurable queuing mechanisms, retry logic, and monitoring capabilities.
+
+== Features
+- **Multiple Queueing Backends**:
+* In-memory queue (default)
+* Redis-backed queue
+* Support for future implementations (RabbitMQ, Database)
+
+- **Reliable Email Delivery**:
+* Configurable retry mechanism with exponential backoff
+* Detailed email processing history
+* Error tracking and reporting
+
+- **Performance Monitoring**:
+* Queue status metrics
+* Processing history
+* Processing time tracking
+
+- **RESTful API**:
+* Email submission endpoint
+* Queue status monitoring
+* Email history retrieval
+
+- **Scalability**:
+* Configurable worker count
+* Priority-based email processing
+* Delayed email delivery support
+
+== Configuration
+The service can be configured through your file: `application.conf`
+
+[source,hocon]
+----
+email {
+    from = "your-email@example.com"
+    password = "your-password"
+    host = "smtp.example.com"
+    port = 587
+
+    queue {
+        type = "IN_MEMORY" # Options: IN_MEMORY, REDIS, RABBIT_MQ, DATABASE
+    }
+}
+
+# Required only if using Redis queue
+redis {
+    host = "localhost"
+    port = 6379
+}
+----
+
+== API Endpoints
+
+=== Submit Email
+
+[source]
+----
+ POST /api/email
+----
+
+[source,json]
+----
+{
+  "recipient": "recipient@example.com",
+  "subject": "Email subject",
+  "body": "Email body content"
+}
+----
+
+=== Get Queue Status
+
+[source]
+----
+GET /api/email/queue/status
+----
+=== Get Email History
+
+[source]
+----
+GET /api/email/history?limit=100
+----
+== Queue Types
+=== In-Memory Queue
+Perfect for single-instance deployments or testing environments. All queued emails are stored in memory and lost if the application restarts.
+
+=== Redis Queue
+
+Recommended for production environments. Provides:
+- Persistence across application restarts
+- Distributed queue support for multi-instance deployments
+- Scalable email processing
+
+=== Future Queue Types
+The architecture supports implementing additional queue backends:
+
+- RabbitMQ (planned)
+- Database-backed queue (planned)
+
+== Architecture
+
+The service consists of the following main components:
+
+1. : Core email sending functionality using JavaMail **KtorEmailService**
+2. : Interface for different queue implementations **EmailQueueService**
+3. : Factory for creating different queue implementations **EmailQueueFactory**
+4. **RESTful API**: Endpoints for email submission and monitoring
+5. **Monitoring**: Metrics and history tracking
+
+== Worker Model
+
+The service uses a configurable number of workers to process emails in parallel:
+
+[source,kotlin]
+----
+emailQueueService.startProcessing(3) // Start with 3 workers
+----
+Each worker:
+
+- Pulls emails from the queue
+- Attempts delivery
+- Handles failures with exponential backoff
+- Updates metrics and history
+
+== Error Handling
+
+The service implements robust error handling:
+
+- Failed emails are requeued with exponential backoff
+- Maximum of 3 retry attempts before marking as failed
+- Detailed error messages are stored in the processing history
+
+== Metrics
+The service tracks the following metrics:
+
+- Queue size
+- Total emails queued
+- Total emails processed
+- Total emails failed
+- Processing status (active/inactive)
+
+== Requirements
+
+- Java 17+
+- Kotlin 2.1+
+- Ktor server
+- For Redis queue: Redis server
+- SMTP server for email delivery
